@@ -2684,7 +2684,7 @@ const fetchUserLocation = async () => {
                       <img
                         src={whatsappPhoto || "/placeholder.svg"}
                         alt="Target"
-                        className="w-8 h-8 rounded-full object-cover border-2 border-green-400"
+                        className="w-8 h-8 rounded-full object-cover border-2 border-green-400 blur-sm"
                       />
                       <p className="text-lg font-bold text-green-400 font-medium">
                         <span className="text-green-300">[PHONE FOUND]</span> {investigatedPhone}
@@ -2821,7 +2821,7 @@ case 4: // OLD STAGE 2: Detection and Notifications
                     <img
                       src={whatsappPhoto || "/placeholder.svg"}
                       alt="WhatsApp Profile"
-                      className="w-16 h-16 rounded-full object-cover border-2 border-green-400"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-green-400 blur-md"
                     />
                   )}
                   <div>
