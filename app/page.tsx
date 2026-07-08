@@ -1262,7 +1262,7 @@ function QualificationQuiz({ onComplete }: { onComplete: () => void }) {
 function SpySystemContent() {
   // All state and functionality remains the same
   const [currentStage, setCurrentStage] = useState(0)
-  const [showQualificationQuiz, setShowQualificationQuiz] = useState(false)
+  const [quizCompleted, setQuizCompleted] = useState(false)
   const [showContent, setShowContent] = useState(true)
   const [fileName, setFileName] = useState<string | null>(null)
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
@@ -2396,21 +2396,14 @@ const fetchUserLocation = async () => {
             </div>
           </div>
         )
-      case 2: // WhatsApp Analysis Stage (NEW - after Target Profile)
-        if (showQualificationQuiz) {
-          return (
-            <QualificationQuiz
-              onComplete={() => {
-                setShowQualificationQuiz(false)
-                nextStage()
-              }}
-            />
-          )
+      case 2: // Qualification Quiz (4 parts) then WhatsApp Analysis Stage
+        if (!quizCompleted) {
+          return <QualificationQuiz onComplete={() => setQuizCompleted(true)} />
         }
         return (
         <WhatsAppAnalysisStage
           investigatedPhone={investigatedPhone}
-          onComplete={() => setShowQualificationQuiz(true)}
+          onComplete={nextStage}
           userPhoto={whatsappPhoto}
           userCity={userCity}
         />
