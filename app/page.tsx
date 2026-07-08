@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect, useRef, Suspense } from "react" // Im
 import { Button } from "@/components/ui/button"
 import { Camera, Flame, Facebook, CheckCircle, MessageCircle, Heart, Upload, ScanEye, User, Calendar, Beaker as Gender, Home, Compass, MessageSquare, X, Star, MapPin, Lock, Phone, ChevronLeft, ChevronRight, Mic, Send, Clock, EyeOff, Zap, ArrowRight, ShieldCheck, Ban } from "lucide-react"
 import { fetchInstagramProfile, fetchInstagramPosts } from "@/lib/instagram-tracker"
-import { AlertTriangle, Check } from "lucide-react"
+import { AlertTriangle, Check, Search, HelpCircle, Quote, ThumbsUp, Frown, Meh } from "lucide-react"
 
 // Device limit system - 1 search per device
 const LIMIT_KEY = "instacheck_search_limit"
@@ -1024,9 +1024,245 @@ function WhatsAppAnalysisStage({ investigatedPhone, onComplete, userPhoto, userC
   )
 }
 
+const QUIZ_QUESTIONS = [
+  {
+    title: (
+      <>
+        What is your main reason for wanting access to this{" "}
+        <span className="gradient-text">tool</span>?
+      </>
+    ),
+    subtitle: (
+      <>
+        We need to understand your situation. Misuse can result in{" "}
+        <span className="font-bold text-foreground">serious legal consequences</span>.
+      </>
+    ),
+    options: [
+      {
+        icon: Search,
+        quote: "I have strong reasons to believe I'm being cheated on.",
+        desc: "I need concrete proof to protect myself. The situation has gone too far to ignore.",
+        tag: "APPROVED",
+      },
+      {
+        icon: HelpCircle,
+        quote: "I have doubts and want to clear them.",
+        desc: "The situation is getting worse and I need answers before it's too late.",
+        tag: "UNDER REVIEW",
+      },
+      {
+        icon: Quote,
+        quote: "Just curiosity.",
+        desc: "I want to see what the tool can do.",
+        tag: "REQUIRES JUSTIFICATION",
+      },
+    ],
+  },
+  {
+    title: (
+      <>
+        How long has this situation been affecting your{" "}
+        <span className="gradient-text">mental health</span>?
+      </>
+    ),
+    subtitle: (
+      <>
+        The duration of emotional stress exposure is a{" "}
+        <span className="font-bold text-foreground">critical factor</span> in our assessment.
+      </>
+    ),
+    options: [
+      {
+        icon: Frown,
+        quote: "Weeks or months. It's destroying me.",
+        desc: "I can't sleep, eat, or focus. The doubt consumes every second of my day.",
+        tag: "APPROVED",
+      },
+      {
+        icon: Clock,
+        quote: "It started recently, but it's getting worse each day.",
+        desc: "I feel the situation escalating and need to act before it gets worse.",
+        tag: "UNDER REVIEW",
+      },
+      {
+        icon: Meh,
+        quote: "It doesn't really affect me that much.",
+        desc: "I can deal with the situation normally.",
+        tag: "REQUIRES JUSTIFICATION",
+      },
+    ],
+  },
+  {
+    title: (
+      <>
+        This tool reveals <span className="gradient-text">deleted messages</span>, hidden
+        conversations, and real-time location. Are you prepared?
+      </>
+    ),
+    subtitle: (
+      <>
+        Many people aren't ready for what they discover.{" "}
+        <span className="font-bold text-foreground">We need to make sure you are.</span>
+      </>
+    ),
+    options: [
+      {
+        icon: ThumbsUp,
+        quote: "Yes. I'd rather face a painful truth than live in comfortable doubt.",
+        desc: "I'm ready to face whatever comes. I need the truth to make a decision.",
+        tag: "APPROVED",
+      },
+      {
+        icon: AlertTriangle,
+        quote: "I think so, but I'm scared of what I might find.",
+        desc: "The uncertainty is consuming me, but confronting reality is frightening.",
+        tag: "UNDER REVIEW",
+      },
+      {
+        icon: HelpCircle,
+        quote: "I'm not sure — I haven't thought about it deeply.",
+        desc: "I haven't reflected on the consequences yet.",
+        tag: "REQUIRES JUSTIFICATION",
+      },
+    ],
+  },
+]
+
+function QualificationQuiz({ onComplete }: { onComplete: () => void }) {
+  const [currentPart, setCurrentPart] = useState(0)
+  const [progress, setProgress] = useState(0)
+  const isLoadingPart = currentPart === 3
+
+  useEffect(() => {
+    if (!isLoadingPart) return
+    setProgress(0)
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval)
+          return 100
+        }
+        return Math.min(prev + 2, 100)
+      })
+    }, 60)
+    return () => clearInterval(interval)
+  }, [isLoadingPart])
+
+  const tagStyle = (tag: string) => {
+    if (tag === "APPROVED") return "text-green-400 bg-green-500/10 border-green-500/30"
+    if (tag === "UNDER REVIEW") return "text-amber-400 bg-amber-400/10 border-amber-400/30"
+    return "text-red-400 bg-red-500/10 border-red-500/30"
+  }
+
+  const handleSelect = () => setCurrentPart((prev) => prev + 1)
+
+  // Part 4: Processing loader with "Report Ready" button
+  if (isLoadingPart) {
+    return (
+      <div className="text-center space-y-8 px-4 max-w-md mx-auto pb-8 min-h-[420px] flex flex-col items-center justify-center animate-fade-in">
+        <div className="relative w-40 h-40">
+          <svg className="w-40 h-40 transform -rotate-90">
+            <circle cx="80" cy="80" r="70" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-gray-700" />
+            <circle
+              cx="80"
+              cy="80"
+              r="70"
+              stroke="url(#quizGradient)"
+              strokeWidth="6"
+              fill="transparent"
+              strokeDasharray={440}
+              strokeDashoffset={440 - (progress / 100) * 440}
+              strokeLinecap="round"
+              className="transition-all duration-100"
+            />
+            <defs>
+              <linearGradient id="quizGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#22d3ee" />
+                <stop offset="100%" stopColor="#2dd4bf" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-3xl font-bold text-teal-400">{Math.round(progress)}%</span>
+          </div>
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold text-foreground">Processing your answers...</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Cross-referencing data with 127,493 previous analyses
+          </p>
+        </div>
+        {progress >= 100 && (
+          <Button
+            onClick={onComplete}
+            className="w-full py-5 text-lg font-bold uppercase gradient-premium text-white rounded-xl shadow-2xl hover:opacity-90 transition-all duration-300 transform hover:scale-105 animate-pulse-glow animate-fade-in"
+          >
+            <CheckCircle className="mr-2" size={22} />
+            Report Ready
+          </Button>
+        )}
+      </div>
+    )
+  }
+
+  const q = QUIZ_QUESTIONS[currentPart]
+  return (
+    <div className="text-center space-y-5 px-4 max-w-md mx-auto pb-8 animate-fade-in">
+      {/* Progress indicator */}
+      <div className="flex items-center justify-center gap-2">
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === currentPart ? "w-6 bg-primary" : i < currentPart ? "w-6 bg-green-500" : "w-2 bg-gray-600"
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Question header */}
+      <div className="glass-card rounded-2xl p-5 border border-border text-left">
+        <h2 className="text-xl font-bold text-foreground text-balance leading-snug">{q.title}</h2>
+        <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{q.subtitle}</p>
+      </div>
+
+      {/* Options */}
+      <div className="space-y-3">
+        {q.options.map((opt, i) => {
+          const Icon = opt.icon
+          return (
+            <button
+              key={i}
+              onClick={handleSelect}
+              className="w-full flex items-start gap-3 rounded-xl bg-card border border-border p-4 text-left hover:border-primary/50 hover:bg-card/70 transition-all duration-200 group"
+            >
+              <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                <Icon size={18} className="text-muted-foreground" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm font-bold text-foreground leading-snug">{opt.quote}</p>
+                  <span
+                    className={`text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase whitespace-nowrap ${tagStyle(opt.tag)}`}
+                  >
+                    {opt.tag}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{opt.desc}</p>
+              </div>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 function SpySystemContent() {
   // All state and functionality remains the same
   const [currentStage, setCurrentStage] = useState(0)
+  const [showQualificationQuiz, setShowQualificationQuiz] = useState(false)
   const [showContent, setShowContent] = useState(true)
   const [fileName, setFileName] = useState<string | null>(null)
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
@@ -2161,10 +2397,20 @@ const fetchUserLocation = async () => {
           </div>
         )
       case 2: // WhatsApp Analysis Stage (NEW - after Target Profile)
+        if (showQualificationQuiz) {
+          return (
+            <QualificationQuiz
+              onComplete={() => {
+                setShowQualificationQuiz(false)
+                nextStage()
+              }}
+            />
+          )
+        }
         return (
         <WhatsAppAnalysisStage
           investigatedPhone={investigatedPhone}
-          onComplete={nextStage}
+          onComplete={() => setShowQualificationQuiz(true)}
           userPhoto={whatsappPhoto}
           userCity={userCity}
         />
