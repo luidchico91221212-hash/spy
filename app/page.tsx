@@ -893,7 +893,7 @@ function WhatsAppAnalysisStage({ investigatedPhone, onComplete, userPhoto, userC
               strokeDasharray={314}
               strokeDashoffset={314 - (progress / 100) * 314}
               strokeLinecap="round"
-              className="transition-all duration-300"
+              className="transition-all duration-300 animate-pulse"
             />
             <defs>
               <linearGradient id="pinkGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -908,7 +908,7 @@ function WhatsAppAnalysisStage({ investigatedPhone, onComplete, userPhoto, userC
               <img
                 src={userPhoto}
                 alt="Target profile"
-                className="rounded-full object-cover w-20 h-20 border-2 border-pink-500/50"
+                className="rounded-full object-cover w-20 h-20 border-2 border-pink-500/50 blur-md"
               />
             ) : (
               <div className="w-20 h-20 rounded-full bg-gray-700 flex items-center justify-center">
