@@ -379,11 +379,27 @@ function CarouselPost3({ instagramProfile, imagePreviewUrl, investigatedHandle }
 
 // Live Discovery Toasts - social proof notifications of people "discovering" content near the user
 function LiveDiscoveryToasts({ targetCity }: { targetCity?: string }) {
-  const nearbyNames = [
-    "Emma S.", "James P.", "Olivia M.", "Liam S.", "Sophia R.",
-    "Noah F.", "Ava A.", "Ethan M.", "Isabella L.", "Mason C.",
-    "Mia F.", "Lucas G.", "Charlotte R.", "Daniel V.", "Amelia M.",
-    "Henry T.", "Grace N.", "Jack B.", "Chloe D.", "Ryan H.",
+  const nearbyPeople = [
+    { name: "Emma S.", photo: "https://randomuser.me/api/portraits/women/1.jpg" },
+    { name: "James P.", photo: "https://randomuser.me/api/portraits/men/2.jpg" },
+    { name: "Olivia M.", photo: "https://randomuser.me/api/portraits/women/3.jpg" },
+    { name: "Liam S.", photo: "https://randomuser.me/api/portraits/men/4.jpg" },
+    { name: "Sophia R.", photo: "https://randomuser.me/api/portraits/women/5.jpg" },
+    { name: "Noah F.", photo: "https://randomuser.me/api/portraits/men/6.jpg" },
+    { name: "Ava A.", photo: "https://randomuser.me/api/portraits/women/7.jpg" },
+    { name: "Ethan M.", photo: "https://randomuser.me/api/portraits/men/8.jpg" },
+    { name: "Isabella L.", photo: "https://randomuser.me/api/portraits/women/9.jpg" },
+    { name: "Mason C.", photo: "https://randomuser.me/api/portraits/men/10.jpg" },
+    { name: "Mia F.", photo: "https://randomuser.me/api/portraits/women/11.jpg" },
+    { name: "Lucas G.", photo: "https://randomuser.me/api/portraits/men/12.jpg" },
+    { name: "Charlotte R.", photo: "https://randomuser.me/api/portraits/women/13.jpg" },
+    { name: "Daniel V.", photo: "https://randomuser.me/api/portraits/men/14.jpg" },
+    { name: "Amelia M.", photo: "https://randomuser.me/api/portraits/women/15.jpg" },
+    { name: "Henry T.", photo: "https://randomuser.me/api/portraits/men/16.jpg" },
+    { name: "Grace N.", photo: "https://randomuser.me/api/portraits/women/17.jpg" },
+    { name: "Jack B.", photo: "https://randomuser.me/api/portraits/men/18.jpg" },
+    { name: "Chloe D.", photo: "https://randomuser.me/api/portraits/women/19.jpg" },
+    { name: "Ryan H.", photo: "https://randomuser.me/api/portraits/men/20.jpg" },
   ]
 
   // Discovery actions (English only)
@@ -404,7 +420,9 @@ function LiveDiscoveryToasts({ targetCity }: { targetCity?: string }) {
   ]
 
   const [ipCity, setIpCity] = useState<string>("")
-  const [toasts, setToasts] = useState<{ id: number; name: string; text: string; city: string; secs: number }[]>([])
+  const [toasts, setToasts] = useState<
+    { id: number; name: string; photo: string; text: string; city: string; secs: number }[]
+  >([])
 
   // Prefer the city derived from the entered phone number; fall back to IP location
   const userCity = targetCity || ipCity
@@ -427,7 +445,7 @@ function LiveDiscoveryToasts({ targetCity }: { targetCity?: string }) {
   // Generate a new toast every few seconds
   useEffect(() => {
     const makeToast = () => {
-      const name = nearbyNames[Math.floor(Math.random() * nearbyNames.length)]
+      const person = nearbyPeople[Math.floor(Math.random() * nearbyPeople.length)]
       const action = discoveryActions[Math.floor(Math.random() * discoveryActions.length)]
       const n = Math.floor(Math.random() * 40) + 8
       // Strongly bias toward the user's real city so it feels local
@@ -437,7 +455,14 @@ function LiveDiscoveryToasts({ targetCity }: { targetCity?: string }) {
           : cityPool[Math.floor(Math.random() * cityPool.length)]
       const secs = Math.floor(Math.random() * 40) + 2
 
-      const newToast = { id: Date.now() + Math.random(), name, text: action(n), city, secs }
+      const newToast = {
+        id: Date.now() + Math.random(),
+        name: person.name,
+        photo: person.photo,
+        text: action(n),
+        city,
+        secs,
+      }
       setToasts((prev) => [newToast, ...prev].slice(0, 3))
 
       // Auto-remove after 6 seconds
@@ -459,19 +484,17 @@ function LiveDiscoveryToasts({ targetCity }: { targetCity?: string }) {
   return (
     <div className="fixed bottom-4 left-4 z-50 flex flex-col gap-2 max-w-[85vw] sm:max-w-xs pointer-events-none">
       {toasts.map((t) => {
-        const initials = t.name
-          .split(" ")
-          .map((p) => p[0])
-          .join("")
-          .slice(0, 2)
         return (
           <div
             key={t.id}
             className="animate-slide-in-notif glass-card border border-pink-500/30 rounded-xl px-3 py-2.5 shadow-lg flex items-center gap-3"
           >
-            <div className="flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-pink-500 to-red-500 flex items-center justify-center text-white text-xs font-bold">
-              {initials}
-            </div>
+            <img
+              src={t.photo || "/placeholder.svg"}
+              alt={t.name}
+              crossOrigin="anonymous"
+              className="flex-shrink-0 w-9 h-9 rounded-full object-cover border-2 border-pink-500/50"
+            />
             <div className="min-w-0">
               <p className="text-sm text-foreground leading-tight">
                 <span className="font-bold text-pink-400">{t.name}</span>{" "}
