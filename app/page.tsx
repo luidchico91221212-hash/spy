@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect, useRef, Suspense } from "react" // Im
 import { Button } from "@/components/ui/button"
 import { Camera, Flame, Facebook, CheckCircle, MessageCircle, Heart, Upload, ScanEye, User, Calendar, Beaker as Gender, Home, Compass, MessageSquare, X, Star, MapPin, Lock, Phone, ChevronLeft, ChevronRight, Mic, Send, Clock, EyeOff, Zap, ArrowRight, ShieldCheck, Ban } from "lucide-react"
 import { fetchInstagramProfile, fetchInstagramPosts } from "@/lib/instagram-tracker"
-import { AlertTriangle } from "lucide-react"
+import { AlertTriangle, Check } from "lucide-react"
 
 // Device limit system - 1 search per device
 const LIMIT_KEY = "instacheck_search_limit"
@@ -2047,17 +2047,13 @@ const fetchUserLocation = async () => {
                   {/* WhatsApp section - only show when photo is loaded */}
                   {whatsappPhoto && (
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-700 flex items-center justify-center">
-                        <img
-                          src={whatsappPhoto}
-                          alt="WhatsApp Profile"
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            ;(e.target as HTMLImageElement).src = "/whatsapp-checkmark.jpeg"
-                          }}
-                        />
+                      <div className="w-12 h-12 rounded-full bg-pink-500/20 border-2 border-pink-500 flex items-center justify-center flex-shrink-0">
+                        <Check className="text-pink-500" size={28} strokeWidth={3} />
                       </div>
                       <div className="flex-1">
+                        <p className="text-xs font-bold text-red-500 animate-pulse uppercase tracking-wide">
+                          Profile Detected
+                        </p>
                         <p className="text-sm text-green-400 font-medium">
                           WhatsApp Profile Found
                         </p>
